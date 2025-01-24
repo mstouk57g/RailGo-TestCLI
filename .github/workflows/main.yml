@@ -14,7 +14,7 @@ jobs:
 
     env:
       Solution_Name: RailGo.sln
-      Project_Directory: RailGo/RailGo
+      Project_Directory: RailGo/RailGo.Android
 
     steps:
     - name: Checkout
@@ -53,4 +53,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: MSIX Package
-        path: RailGo/AppxPackages/**
+        path: RailGo.Android/AppxPackages/**
