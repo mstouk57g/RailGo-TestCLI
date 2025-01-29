@@ -19,6 +19,7 @@ jobs:
 
     env:
       Solution_Name: RailGo.sln
+      SigningKey_Path: SigningKey.pfx
 
     steps:
     - name: Checkout
@@ -63,6 +64,22 @@ jobs:
         Appx_Package_Dir: AppxPackages\
         Configuration: Release
 
+    # Decode the base64 encoded pfx and sign the package
+    - name: Sign .msix
+      if: ${{ inputs.create_package }}
+      run: |
+        # Get signtool.exe
+        $signtool = Get-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe"
+        if ($signtool -is [array]) {
+          $signtool = $signtool[0]
+        }
+
+        # Sign .msix
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.pfx_base64_encoded }}")
+        [IO.File]::WriteAllBytes("${{ env.SigningKey_Path }}", $pfx_cert_byte)
+        & $signtool sign /f "${{ env.SigningKey_Path }}" /fd SHA256 /td SHA256 "${{ steps.preparation.outputs.packageName }}.msix"
+        rm "${{ env.SigningKey_Path }}"
+        
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
