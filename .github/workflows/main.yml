@@ -2,6 +2,11 @@ name: build and package
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Enter the new version number (e.g., 1.0.0.1)'
+        required: true
+        type: string
 
 env:
   DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
@@ -14,7 +19,7 @@ jobs:
 
     env:
       Solution_Name: RailGo.sln
-      Project_Directory: RailGo/RailGo.Android
+      Project_Directory: RailGo/RailGo
 
     steps:
     - name: Checkout
@@ -38,6 +43,17 @@ jobs:
       env:
         Configuration: Release
 
+    - name: Update AppxManifest Version
+      shell: pwsh
+      run: |
+        $manifestPath = "YourProject/Package.appxmanifest"
+        [xml]$xml = Get-Content $manifestPath
+        $newVersion = "${{ github.event.inputs.version }}"
+        Write-Output "Setting new version: $newVersion"
+        $identityNode = $xml.Package.Identity
+        $identityNode.Version = $newVersion
+        $xml.Save($manifestPath)
+
     # Create the app package by building and packaging the Windows Application Packaging project
     - name: Create the app package
       run: msbuild $env:Solution_Name /p:AppxBundlePlatforms="$env:Appx_Bundle_Platforms" /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=false
@@ -53,4 +69,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: MSIX Package
-        path: RailGo.Android/**
+        path: RailGo/AppxPackages/*/*.msix
