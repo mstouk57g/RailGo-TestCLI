@@ -87,4 +87,4 @@ jobs:
         name: MSIX Package
         path: |
           RailGo/AppxPackages/*/*.msix
-          RailGo.Android/bin/${{ env.Configuration }}/*/*.apk
+          RailGo.Android/bin/Release/*/*.apk
