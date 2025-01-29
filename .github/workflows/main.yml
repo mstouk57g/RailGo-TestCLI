@@ -47,7 +47,7 @@ jobs:
     - name: Update AppxManifest Version
       shell: pwsh
       run: |
-        $manifestPath = "YourProject/Package.appxmanifest"
+        $manifestPath = "RailGo/Package.appxmanifest"
         [xml]$xml = Get-Content $manifestPath
         $newVersion = "${{ github.event.inputs.version }}"
         Write-Output "Setting new version: $newVersion"
