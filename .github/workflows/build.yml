@@ -47,7 +47,7 @@ jobs:
       shell: pwsh
       run: |
         $AppxManifestPath = "RailGo/Package.appxmanifest"
-        $AndroidManifestPath = "RailGo.Android/Platforms/Android/AndroidManifest.xml
+        $AndroidManifestPath = "RailGo.Android/Platforms/Android/AndroidManifest.xml"
         $UnoManifestPath = "RailGo/Package.appxmanifest"
         $newVersion = "${{ github.event.inputs.version }}"
         $versionParts = $newVersion -split "\."
