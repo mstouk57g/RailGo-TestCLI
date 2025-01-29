@@ -46,13 +46,26 @@ jobs:
     - name: Update AppxManifest Version
       shell: pwsh
       run: |
-        $manifestPath = "RailGo/Package.appxmanifest"
-        [xml]$xml = Get-Content $manifestPath
+        $AppxManifestPath = "RailGo/Package.appxmanifest"
+        $AndroidManifestPath = "RailGo.Android/Platforms/Android/AndroidManifest.xml
+        $UnoManifestPath = "RailGo/Package.appxmanifest"
         $newVersion = "${{ github.event.inputs.version }}"
+        $versionParts = $newVersion -split "\."
+        $versionCode = ($versionParts[0] * 10000) + ($versionParts[1] * 100) + ($versionParts[2])
         Write-Output "Setting new version: $newVersion"
-        $identityNode = $xml.Package.Identity
+        Write-Output "Setting new version code: $versionCode"
+        [xml]$xmlMSIX = Get-Content $AppxManifestPath
+        $identityNode = $xmlMSIX.Package.Identity
         $identityNode.Version = $newVersion
-        $xml.Save($manifestPath)
+        $xmlMSIX.Save($AppxManifestPath)
+        [xml]$xmlAndroid = Get-Content $AndroidManifestPath
+        $xmlAndroid.manifest.@'android:versionCode' = $versionCode
+        $xmlAndroid.manifest.@'android:versionName' = $newVersion
+        $xmlAndroid.Save($AndroidManifestPath)
+        [xml]$xmlUno = Get-Content $UnoManifestPath
+        $xmlUno.Project.PropertyGroup.ApplicationDisplayVersion = $newVersion
+        $xmlUno.Project.PropertyGroup.ApplicationVersion = $versionCode
+        $xmlUno.Save($UnoManifestPath)
 
     # Create the app package by building and packaging the Windows Application Packaging project
     - name: Create the app package
