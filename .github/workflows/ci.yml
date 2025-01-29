@@ -24,4 +24,4 @@ jobs:
 
       - name: Build RailGo (Debug)
         shell: pwsh
-        run: msbuild ./RailGo/RailGo.csproj /r
+        run: msbuild ./RailGo/RailGo.Android.csproj /r
