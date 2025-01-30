@@ -59,8 +59,8 @@ jobs:
         $identityNode.Version = $newVersion
         $xmlMSIX.Save($AppxManifestPath)
         [xml]$xmlAndroid = Get-Content $AndroidManifestPath
-        $xmlAndroid.manifest.'android:versionCode' = $versionCode
-        $xmlAndroid.manifest.'android:versionName' = $newVersion
+        $xmlAndroid.manifest.SetAttribute('android:versionCode', $versionCode)
+        $xmlAndroid.manifest.SetAttribute('android:versionName', $newVersion)
         $xmlAndroid.Save($AndroidManifestPath)
         [xml]$xmlUno = Get-Content $UnoManifestPath
         $xmlUno.Project.PropertyGroup.ApplicationDisplayVersion = $newVersion
