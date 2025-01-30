@@ -48,7 +48,7 @@ jobs:
       run: |
         $AppxManifestPath = "RailGo/Package.appxmanifest"
         $AndroidManifestPath = "RailGo.Android/Platforms/Android/AndroidManifest.xml"
-        $UnoManifestPath = "RailGo/Package.appxmanifest"
+        $UnoManifestPath = "RailGo.Android/RailGo.Android.csproj"
         $newVersion = "${{ github.event.inputs.version }}"
         $versionParts = $newVersion -split "\."
         $versionCode = ($versionParts[0] * 10000) + ($versionParts[1] * 100) + ($versionParts[2])
